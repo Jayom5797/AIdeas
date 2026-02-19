@@ -379,29 +379,144 @@ button.secondary {
 
 @media (max-width: 768px) {
   .app {
-    padding: 16px;
+    padding: 12px;
   }
 
   .header {
     flex-direction: column;
     align-items: flex-start;
     gap: 12px;
+    padding: 16px;
+  }
+
+  .header h1 {
+    font-size: 18px;
+  }
+
+  .header-actions {
+    width: 100%;
+  }
+
+  .header-actions button {
+    flex: 1;
+    font-size: 13px;
+    padding: 10px 12px;
+  }
+
+  .your-stats {
+    padding: 16px;
   }
 
   .stats-row {
     grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
   }
 
-  .leaderboard-table {
-    font-size: 13px;
+  .stat-value {
+    font-size: 24px;
   }
 
-  .leaderboard-table th,
+  .section-header {
+    padding: 16px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .section-header h2 {
+    font-size: 16px;
+  }
+
+  /* Hide table on mobile, show cards instead */
+  .leaderboard-table thead {
+    display: none;
+  }
+
+  .leaderboard-table,
+  .leaderboard-table tbody,
+  .leaderboard-table tr,
   .leaderboard-table td {
-    padding: 8px;
+    display: block;
+    width: 100%;
+  }
+
+  .leaderboard-table tr {
+    border: 1px solid #E5E7EB;
+    margin-bottom: 12px;
+    padding: 12px;
+    background: #FFFFFF;
+  }
+
+  .leaderboard-table tr:hover {
+    background: #F9FAFB;
+  }
+
+  .leaderboard-table tr.highlight {
+    background: #FFFBEB;
+    border-left: 4px solid #F59E0B;
+  }
+
+  .leaderboard-table td {
+    border: none;
+    padding: 6px 0;
+    text-align: left !important;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .leaderboard-table td::before {
+    content: attr(data-label);
+    font-weight: 700;
+    font-size: 11px;
+    color: #6B7280;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .rank-col::before {
+    content: "Rank";
+  }
+
+  .title-col::before {
+    content: "Title";
+  }
+
+  .author-col::before {
+    content: "Author";
+  }
+
+  .num-col::before {
+    content: attr(data-label);
+  }
+
+  .action-col::before {
+    content: "";
   }
 
   .title-col {
-    min-width: 200px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+    font-weight: 600;
+  }
+
+  .badge {
+    margin-bottom: 4px;
+  }
+
+  .modal {
+    padding: 24px;
+    margin: 16px;
+    max-width: calc(100% - 32px);
+  }
+
+  .modal h2 {
+    font-size: 18px;
+  }
+
+  .footer-stats {
+    font-size: 12px;
+    padding: 12px 16px;
   }
 }

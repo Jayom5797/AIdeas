@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import './App.css'
 
-const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000'
+const API_BASE = import.meta.env.VITE_API_URL || 'https://aideas-production.up.railway.app'
 const YOUR_ARTICLE_TITLE = 'ASET'
 
 function App() {
@@ -242,15 +242,15 @@ function App() {
               const isYours = article.content_id === yourArticle?.content_id
               return (
                 <tr key={article.content_id} className={isYours ? 'highlight' : ''}>
-                  <td className="rank-col">{index + 1}</td>
-                  <td className="title-col">
+                  <td className="rank-col" data-label="Rank">{index + 1}</td>
+                  <td className="title-col" data-label="Title">
                     {isYours && <span className="badge">YOU</span>}
                     {article.title}
                   </td>
-                  <td className="author-col">{article.author_name || '—'}</td>
-                  <td className="num-col">{article.likes_count}</td>
-                  <td className="num-col">{article.comments_count}</td>
-                  <td className="num-col">{article.engagement_score.toFixed(1)}</td>
+                  <td className="author-col" data-label="Author">{article.author_name || '—'}</td>
+                  <td className="num-col" data-label="Likes">{article.likes_count}</td>
+                  <td className="num-col" data-label="Comments">{article.comments_count}</td>
+                  <td className="num-col" data-label="Score">{article.engagement_score.toFixed(1)}</td>
                   <td className="action-col">
                     {article.article_url && (
                       <a href={article.article_url} target="_blank" rel="noopener noreferrer">View</a>
@@ -278,10 +278,10 @@ function App() {
               <tbody>
                 {hostArticles.map((article) => (
                   <tr key={article.content_id} className="host-row">
-                    <td className="title-col">{article.title}</td>
-                    <td className="author-col">{article.author_name}</td>
-                    <td className="num-col">{article.likes_count}</td>
-                    <td className="num-col">{article.comments_count}</td>
+                    <td className="title-col" data-label="Title">{article.title}</td>
+                    <td className="author-col" data-label="Author">{article.author_name}</td>
+                    <td className="num-col" data-label="Likes">{article.likes_count}</td>
+                    <td className="num-col" data-label="Comments">{article.comments_count}</td>
                     <td className="action-col">
                       {article.article_url && (
                         <a href={article.article_url} target="_blank" rel="noopener noreferrer">View</a>
