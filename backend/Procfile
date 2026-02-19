@@ -1,0 +1,1 @@
+web: cd api && uvicorn unified:app --host 0.0.0.0 --port $PORT
