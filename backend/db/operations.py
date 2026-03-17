@@ -63,7 +63,7 @@ class ArticleDB:
     
     def get_leaderboard(
         self, 
-        limit: int = 100, 
+        limit: Optional[int] = 100, 
         sort_by: str = 'engagement_score',
         exclude_author: str | None = None
     ) -> List[Article]:
@@ -91,7 +91,10 @@ class ArticleDB:
         else:
             query = query.order_by(Article.engagement_score.desc())
         
-        return query.limit(limit).all()
+        if limit:
+            query = query.limit(limit)
+        
+        return query.all()
     
     def get_article(self, content_id: str) -> Optional[Article]:
         """Get single article by ID"""

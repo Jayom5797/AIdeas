@@ -121,7 +121,7 @@ def get_leaderboard(exclude_host: bool = True):
     db = ArticleDB(session)
     
     try:
-        articles = db.get_leaderboard(limit=100, exclude_author="Ben Fowler" if exclude_host else None)
+        articles = db.get_leaderboard(limit=None, exclude_author="Ben Fowler" if exclude_host else None)
         return [ArticleResponse(**article.to_dict()) for article in articles]
     finally:
         session.close()

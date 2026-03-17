@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import './App.css'
 
-const API_BASE = import.meta.env.VITE_API_URL || 'https://aideas-production.up.railway.app'
+const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000'
 const YOUR_ARTICLE_TITLE = 'ASET'
 
 function App() {
@@ -66,8 +66,8 @@ function App() {
     }
   }
 
-  const getRank = (contentId) => {
-    return leaderboard.findIndex(a => a.content_id === contentId) + 1
+  const getRank = (contentId, sortedArray = sortedLeaderboard) => {
+    return sortedArray.findIndex(a => a.content_id === contentId) + 1
   }
 
   const checkCookieStatus = async () => {
@@ -187,7 +187,7 @@ function App() {
           <div className="stats-row">
             <div className="stat">
               <span className="stat-label">Rank</span>
-              <span className="stat-value">#{getRank(yourArticle.content_id)} / {stats.total_articles}</span>
+              <span className="stat-value">#{getRank(yourArticle.content_id, sortedLeaderboard)} / {stats.total_articles}</span>
             </div>
             <div className="stat">
               <span className="stat-label">Likes</span>
