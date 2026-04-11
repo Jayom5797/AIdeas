@@ -207,25 +207,25 @@ async def update_cookies(cookies_data: dict):
 
 @app.get("/cookies/status")
 def check_cookies():
-    """Check if cookies file exists and is valid"""
+    """Check if cookies are available (file or env var)"""
     try:
         cookies_path = Path(__file__).parent.parent / "cookies.json"
-        
-        if not cookies_path.exists():
-            return {"status": "missing", "message": "No cookies.json found"}
-        
-        with open(cookies_path, 'r') as f:
-            cookies = json.load(f)
-        
-        if not isinstance(cookies, list) or len(cookies) == 0:
-            return {"status": "invalid", "message": "cookies.json is empty or invalid"}
-        
-        return {
-            "status": "valid", 
-            "message": f"Found {len(cookies)} cookies",
-            "cookie_count": len(cookies)
-        }
-        
+
+        if cookies_path.exists():
+            with open(cookies_path, 'r') as f:
+                cookies = json.load(f)
+            if isinstance(cookies, list) and len(cookies) > 0:
+                return {"status": "valid", "message": f"Found {len(cookies)} cookies", "cookie_count": len(cookies)}
+
+        # Check env var fallback
+        cookies_env = os.environ.get("COOKIES_JSON")
+        if cookies_env:
+            cookies = json.loads(cookies_env)
+            if isinstance(cookies, list) and len(cookies) > 0:
+                return {"status": "valid", "message": f"Found {len(cookies)} cookies (from env)", "cookie_count": len(cookies)}
+
+        return {"status": "missing", "message": "No cookies found"}
+
     except Exception as e:
         return {"status": "error", "message": str(e)}
 

@@ -4,6 +4,7 @@ Simple HTTP requests - no browser automation
 """
 import requests
 import json
+import os
 import time
 from typing import List, Dict, Optional
 from pathlib import Path
@@ -22,14 +23,20 @@ class ArticleFetcher:
         self._load_cookies()
     
     def _load_cookies(self):
-        """Load cookies from cookies.json"""
-        # Look for cookies.json in backend directory (parent of scraper)
+        """Load cookies from cookies.json, falling back to COOKIES_JSON env var"""
         cookies_path = Path(__file__).parent.parent / "cookies.json"
-        
+
+        # If file missing, try to restore from environment variable
         if not cookies_path.exists():
-            raise FileNotFoundError(
-                f"cookies.json not found at {cookies_path}. Please export cookies using EditThisCookie extension."
-            )
+            cookies_env = os.environ.get("COOKIES_JSON")
+            if cookies_env:
+                print("🍪 Restoring cookies from COOKIES_JSON environment variable...")
+                with open(cookies_path, 'w') as f:
+                    f.write(cookies_env)
+            else:
+                raise FileNotFoundError(
+                    f"cookies.json not found at {cookies_path}. Please export cookies using EditThisCookie extension."
+                )
         
         print("🍪 Loading cookies from cookies.json...")
         
