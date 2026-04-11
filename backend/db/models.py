@@ -1,7 +1,7 @@
 """
 SQLAlchemy database models
 """
-from sqlalchemy import Column, String, Integer, Float, DateTime, Text, create_engine
+from sqlalchemy import Column, String, Integer, Float, DateTime, Text, Boolean, create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from datetime import datetime
@@ -24,6 +24,9 @@ class Article(Base):
     article_url = Column(String)
     description = Column(Text)
     
+    # Finals tracking
+    is_finalist = Column(Boolean, default=False)
+
     # Tracking
     first_seen = Column(DateTime, default=datetime.utcnow)
     last_updated = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
@@ -41,6 +44,7 @@ class Article(Base):
             'published_at': self.published_at.isoformat() if self.published_at else None,
             'article_url': self.article_url,
             'description': self.description,
+            'is_finalist': self.is_finalist,
             'last_updated': self.last_updated.isoformat() if self.last_updated else None,
         }
 
@@ -61,4 +65,20 @@ def init_db(database_url: str):
     """Initialize database and return session maker"""
     engine = create_engine(database_url)
     Base.metadata.create_all(engine)
+    _migrate_add_is_finalist(engine)
     return sessionmaker(bind=engine)
+
+
+def _migrate_add_is_finalist(engine):
+    """Add is_finalist column if it doesn't exist (safe migration)."""
+    with engine.connect() as conn:
+        try:
+            conn.execute(
+                __import__('sqlalchemy').text(
+                    "ALTER TABLE articles ADD COLUMN is_finalist BOOLEAN DEFAULT 0"
+                )
+            )
+            conn.commit()
+            print("[DB] Migrated: added is_finalist column")
+        except Exception:
+            pass  # Column already exists

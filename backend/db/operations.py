@@ -6,6 +6,44 @@ from sqlalchemy.orm import Session
 from datetime import datetime
 from .models import Article, EngagementHistory
 
+# Hardcoded set of finalist content IDs (from the top-50 announcement article)
+FINALIST_CONTENT_IDS = {
+    "39w2EpJsgvWLg1yI3DNXfdX24tt", "39pQRgWDhijhuAlgN7PGgKgRoKm",
+    "3A22NGhiEao2qxdd2Np4qCzahUV", "3AbGElqMID1VIAquwTZjF0hZ8ho",
+    "39vKKkxvVQH1vM8dGpasINKy4Ea", "3BA1XmppjtA03RMR591vsCUxyIZ",
+    "3AKpV9GGYD2hH94y8sZmvM3qqbF", "2rlJyjfEaINU6vttnDCoKWioK7j",
+    "3AuhVCPW5dZn3fiUJ7fwhQyOzuO", "3ApXZirCDBgcUwz2Wtq9XJelthn",
+    "3A0qTVUBzVuln6qahlkE0qX5yw0", "3AQbVLbWi70kMFoB92BwMT6EWj9",
+    "3AqocXTWi2lWGnSkv2IBSMWxuuZ", "39pMA9C7qgjaIBqKJ0iAdQh2YmK",
+    "3AQEpG9RlAFKgKkfOejDaja2TkX", "3AtCnJBSAWMDPwwjZiKLb3966Gp",
+    "2zkFqqTTTB259ZesLX6l9ZbAqjD", "3AfHeBvpSunQSXvPDwSWoGbIkY3",
+    "3A5ZGagjs9NfS76srn6yf0jAxNQ", "3AuHojv2cAq5mta6yC3BL9xKQxk",
+    "3ArXiTl1piZMjDvsLN7gzeaSm2h", "3AYky649pvTCo3t2c74mCOyleM9",
+    "39cMiFMTs7dRujnZnJd6Rw0oqkE", "3AW1kUcDD5MrziiX2z6mCplwNcp",
+    "39n0dA4R4kJaFnRt95Aarx8Lq2Q", "39rLlWN6eOiGKB3qWDZyOPqKYjh",
+    "3AwnvXYA2wZh1jN7WpG2FM6wgIF", "3AUHZSGL7l0rIvdqL154lhZKGTG",
+    "3AZ5MKTeFiz6gT5ETAOMsIw3Vf8", "3ACtQwpKbT8jju0A0QaiMAKalnl",
+    "3Aw69ASEjk9q2Tb1oavrKMotRWz", "3AeXqXKHOhdK9wMUwgK7IVYYV6O",
+    "3Au9FCd7zZXkZWcx4JNZF718VQJ", "39qTnLaOki9b8RyT8MXOrg7Fns6",
+    "3AuDbQhLBCgNjQo1vtdDbVXC0c1", "39nhcXonZOuxaH48n0TzrZDPwoK",
+    "3AhXKEDLAm6Hu7DZ8gaOxQsDCKs", "3ASNW5iP8qrd7wARCBZYBwp2OCz",
+    "3AsfNNuL0H583VpiKKoyZyyMf5E", "39nfgkz3wQ5tMWufutneVaoYfrk",
+    "3Ae5pVpDymo5OF3oo3Ayl9eICdd", "3AvWRbIIAfakGmO0JQOx4m3StUy",
+    "3Atk3LZRvgmQNhtaQnDJqtxYIW6", "3Anluy9p9fwbBgQKjQn9zvhMqmC",
+    "3AuERXnLd33364Vev1HdG49CvzH", "3Au3F8dVsVAd4h3A9Un5tI2b6ji",
+    "3AN8yefCK4HLdu8bscRMqt5ldLv", "39l2TayUzpddaEpCePLFw8Vt7Vl",
+    "39hDgbnVoDjOhrR9yek4LyCuAPM", "3Au5CFfGzb4WZiSPREr50tVNzhA",
+}
+
+
+def is_finalist_article(content_id: str, title: str) -> bool:
+    """Determine if an article belongs to a finalist based on content ID or title prefix."""
+    if content_id in FINALIST_CONTENT_IDS:
+        return True
+    if title and title.startswith("AIdeas Finalist:"):
+        return True
+    return False
+
 
 class ArticleDB:
     """Database operations for articles"""
@@ -26,6 +64,11 @@ class ArticleDB:
         """
         content_id = article_data['content_id']
         existing = self.session.query(Article).filter_by(content_id=content_id).first()
+
+        # Determine finalist status
+        article_data['is_finalist'] = is_finalist_article(
+            content_id, article_data.get('title', '')
+        )
         
         if existing:
             # Check if engagement changed
@@ -65,24 +108,16 @@ class ArticleDB:
         self, 
         limit: Optional[int] = 100, 
         sort_by: str = 'engagement_score',
-        exclude_author: str | None = None
+        exclude_author: str | None = None,
+        finalist_only: bool = False,
     ) -> List[Article]:
-        """
-        Get ranked articles
-        
-        Args:
-            limit: Maximum number of articles to return
-            sort_by: Field to sort by (engagement_score, likes_count, comments_count)
-            exclude_author: Author name to exclude (e.g., "Ben Fowler" for host articles)
-            
-        Returns:
-            List of Article instances sorted by specified metric
-        """
         query = self.session.query(Article)
         
-        # Exclude specific author if specified
         if exclude_author:
             query = query.filter(Article.author_name != exclude_author)
+        
+        if finalist_only:
+            query = query.filter(Article.is_finalist == True)  # noqa: E712
         
         if sort_by == 'likes_count':
             query = query.order_by(Article.likes_count.desc())

@@ -176,6 +176,24 @@ button.secondary {
   letter-spacing: -0.3px;
 }
 
+.finals-banner {
+  background: #FFFBEB;
+  border-bottom: 2px solid #F59E0B;
+  padding: 12px 24px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #92400E;
+}
+
+.finalist-badge {
+  background: #F59E0B;
+  color: #000000;
+}
+
+.leaderboard-table tbody tr.finalist-row td {
+  background: inherit;
+}
+
 .leaderboard-table {
   width: 100%;
   border-collapse: collapse;

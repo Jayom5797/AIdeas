@@ -47,6 +47,7 @@ class ArticleResponse(BaseModel):
     comments_count: int
     engagement_score: float
     article_url: str | None
+    is_finalist: bool
 
 
 class StatsResponse(BaseModel):
@@ -122,6 +123,23 @@ def get_leaderboard(exclude_host: bool = True):
     
     try:
         articles = db.get_leaderboard(limit=None, exclude_author="Ben Fowler" if exclude_host else None)
+        return [ArticleResponse(**article.to_dict()) for article in articles]
+    finally:
+        session.close()
+
+
+@app.get("/leaderboard/finals", response_model=List[ArticleResponse])
+def get_finals_leaderboard(exclude_host: bool = True):
+    """Get leaderboard filtered to finalist articles only"""
+    session = SessionMaker()
+    db = ArticleDB(session)
+
+    try:
+        articles = db.get_leaderboard(
+            limit=None,
+            exclude_author="Ben Fowler" if exclude_host else None,
+            finalist_only=True,
+        )
         return [ArticleResponse(**article.to_dict()) for article in articles]
     finally:
         session.close()
