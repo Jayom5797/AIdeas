@@ -1,45 +1,37 @@
 # Deployment Guide
 
-## Backend (Railway)
+## Backend (Render)
 
-1. **Create Railway account**: https://railway.app
-2. **New Project** → Deploy from GitHub
-3. **Select backend folder** as root
-4. **Add environment variables**:
-   - No variables needed (uses defaults)
-5. **Deploy** - Railway auto-detects Python and uses Procfile
-6. **Copy the public URL** (e.g., `https://your-app.railway.app`)
+1. Go to https://render.com → New → Web Service
+2. Connect your GitHub repo
+3. Set **Root Directory** to `backend`
+4. Configure:
+   - **Runtime**: Python 3
+   - **Build Command**: `pip install -r requirements.txt`
+   - **Start Command**: `uvicorn api.unified:app --host 0.0.0.0 --port $PORT`
+5. Add **Environment Variable**:
+   - `DATABASE_URL` = `sqlite:////var/data/aideas_tracker.db`
+6. Add a **Disk** (Render Dashboard → your service → Disks):
+   - Mount path: `/var/data`
+   - Size: 1 GB
+7. Deploy — copy the public URL (e.g. `https://your-app.onrender.com`)
 
 ### Upload Cookies After Deployment
 - Visit your deployed frontend
 - Click "Manage Cookies"
 - Upload your cookies.json file
-- Cookies are stored on Railway's persistent disk
 
 ## Frontend (Vercel)
 
-1. **Create Vercel account**: https://vercel.com
-2. **New Project** → Import from Git
-3. **Select frontend folder** as root
-4. **Framework Preset**: Vite
-5. **Add environment variable**:
-   - `VITE_API_URL` = `https://your-app.railway.app` (from Railway)
-6. **Deploy**
-
-## Post-Deployment
-
-1. Visit your Vercel URL
-2. Upload cookies via UI
-3. Click "Refresh" to fetch data
-
-## Costs
-
-- Railway: Free tier (500 hours/month)
-- Vercel: Free tier (unlimited)
-- Total: $0/month
+1. Go to https://vercel.com → New Project → Import from Git
+2. Set **Root Directory** to `frontend`
+3. **Framework Preset**: Vite
+4. Add **Environment Variable**:
+   - `VITE_API_URL` = `https://your-app.onrender.com` (from Render)
+5. Deploy
 
 ## Notes
 
-- Cookies expire after ~24 hours - re-upload when needed
-- Database persists on Railway's disk
-- No credit card required for free tiers
+- Render free tier spins down after 15 min of inactivity — first request may be slow
+- Cookies expire after ~24 hours, re-upload when needed
+- SQLite DB persists on the Render disk across deploys
