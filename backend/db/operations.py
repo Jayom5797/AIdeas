@@ -37,10 +37,12 @@ FINALIST_CONTENT_IDS = {
 
 
 def is_finalist_article(content_id: str, title: str) -> bool:
-    """Determine if an article belongs to a finalist based on content ID or title prefix."""
+    """Determine if an article belongs to a tracked category based on content ID or title prefix."""
     if content_id in FINALIST_CONTENT_IDS:
         return True
     if title and title.startswith("AIdeas Finalist:"):
+        return True
+    if title and title.startswith("Weekend Agent Challenge:"):
         return True
     return False
 

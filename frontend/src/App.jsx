@@ -4,7 +4,7 @@ import './App.css'
 const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000'
 
 const isYourArticle = (title) =>
-  title.includes('ASET') && title.toLowerCase().includes('academic safety')
+  title.includes('PULSE') && title.toLowerCase().includes('chief of staff')
 
 function App() {
   const [finalsLeaderboard, setFinalsLeaderboard] = useState([])
@@ -118,7 +118,7 @@ function App() {
   if (cookieStatus?.status !== 'valid' && !showCookieModal) {
     return (
       <div className="app">
-        <div className="header"><h1>AIdeas 2025 Finals</h1></div>
+        <div className="header"><h1>Weekend Agent Challenge</h1></div>
         <div className="cookie-required">
           <p>Authentication required. Please upload AWS Builder session cookies.</p>
           <button onClick={() => setShowCookieModal(true)}>Upload Cookies</button>
@@ -132,7 +132,7 @@ function App() {
   return (
     <div className="app">
       <div className="header">
-        <h1>🏆 AIdeas 2025 Finals</h1>
+        <h1>🏆 Weekend Agent Challenge</h1>
         <div className="header-actions">
           <button onClick={fetchData} disabled={dataLoading}>
             {dataLoading ? 'Refreshing...' : 'Refresh'}
@@ -142,12 +142,12 @@ function App() {
       </div>
 
       <div className="finals-banner">
-        Top 50 Finalists — Submission window Apr 4–17 • Voting Apr 17–24 • Winners announced Apr 30
+        Weekend Agent Challenge — Track submissions and engagement in real-time
       </div>
 
       {yourArticle && (
         <div className="your-stats">
-          <h2>Your Submission <span className="badge finalist-badge">FINALIST</span></h2>
+          <h2>Your Submission</h2>
           <div className="stats-row">
             <div className="stat">
               <span className="stat-label">Rank</span>
@@ -175,7 +175,7 @@ function App() {
 
       <div className="leaderboard-section">
         <div className="section-header">
-          <h2>Finals Leaderboard ({finalsLeaderboard.length} finalists)</h2>
+          <h2>Challenge Leaderboard ({finalsLeaderboard.length} submissions)</h2>
         </div>
 
         <table className="leaderboard-table">
@@ -223,7 +223,7 @@ function App() {
       </div>
 
       <div className="footer-stats">
-        Finals: {finalsLeaderboard.length} finalists • {finalsLeaderboard.reduce((s, a) => s + a.likes_count, 0)} likes • {finalsLeaderboard.reduce((s, a) => s + a.comments_count, 0)} comments
+        Challenge: {finalsLeaderboard.length} submissions • {finalsLeaderboard.reduce((s, a) => s + a.likes_count, 0)} likes • {finalsLeaderboard.reduce((s, a) => s + a.comments_count, 0)} comments
       </div>
 
       {showCookieModal && (
